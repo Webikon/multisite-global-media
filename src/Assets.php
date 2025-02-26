@@ -11,7 +11,6 @@ namespace MultisiteGlobalMedia;
  */
 class Assets
 {
-
     /**
      * @var PluginProperties
      */
@@ -25,6 +24,24 @@ class Assets
     public function __construct(PluginProperties $pluginProperties)
     {
         $this->pluginProperties = $pluginProperties;
+
+        add_filter('multisite_global_media_should_enqueue_assets', [$this, 'shouldEnqueueAssets'], 10, 2);
+    }
+
+    /**
+     * Set default screens where we enqueue assets for media modal
+     *
+     * @param  bool      $enqueue
+     * @param  WP_Screen $screen
+     * @return bool
+     */
+    public function shouldEnqueueAssets($enqueue, $screen)
+    {
+        if ($screen->base === 'post') {
+            $enqueue = true;
+        }
+
+        return $enqueue;
     }
 
     /**
@@ -34,7 +51,7 @@ class Assets
      */
     public function enqueueScripts()
     {
-        if ('post' !== get_current_screen()->base) {
+        if (!apply_filters('multisite_global_media_should_enqueue_assets', false, get_current_screen())) {
             return;
         }
 
@@ -56,7 +73,7 @@ class Assets
      */
     public function enqueueStyles()
     {
-        if ('post' !== get_current_screen()->base) {
+        if (!apply_filters('multisite_global_media_enqueue_assets', false, get_current_screen())) {
             return;
         }
 

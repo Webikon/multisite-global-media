@@ -60,6 +60,11 @@ class Image
     public function acfLoadValue($value, $post_id, $field)
     {
         if ($this->idPrefixIncludedInAttachmentId((int)$value, $this->site->idSitePrefix())) {
+            // Abilitiy to skip filtering the value and return it with prefix
+            if (apply_filters('multisite_global_media_skip_acf_image_load_value', false, $value, $post_id, $field)) {
+                return $value;
+            }
+
             $formatted = $this->stripSiteIdPrefixFromAttachmentId($this->site->idSitePrefix(), (int)$value);
             $this->siteSwitcher->switchToBlog($this->site->id());
             $formatted = acf_format_value($formatted, $post_id, $field);
