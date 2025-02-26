@@ -37,7 +37,13 @@ class Assets
      */
     public function shouldEnqueueAssets($enqueue, $screen)
     {
+        // Post edit screen
         if ($screen->base === 'post') {
+            $enqueue = true;
+        }
+
+        // General settings screen, e.g. Site Icon
+        if (strpos($screen->base, 'options-general') !== false) {
             $enqueue = true;
         }
 
